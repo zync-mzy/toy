@@ -60,14 +60,26 @@ function find_icmp_backdoor {
 	echo "find_icmp_backdoor"
 
 	whitelist="/usr/sbin/NetworkManager|123"
-	for x in `netstat -lwp | grep icmp | awk '{print $NF}'`; do
-		pid=`echo $x | cut -d/ -f1`
-		proc=`ls -l /proc/$pid/exe | awk '{print $NF}'`
-		echo $whitelist | grep $proc >/dev/null 2>&1
-		if [ $? -ne 0 ]; then
-			 echo "$proc(pid: $pid) is listening icmp"
-		else
-			 echo "$proc(pid: $pid) is listening icmp, ignore as it's in whitelist"
+	for x in `ls /proc/`; do
+		if [ $x -gt 0 ] 2>/dev/null ;then
+			for sockid in `ls -l /proc/$x/fd 2>/dev/null | grep socket | cut -d[ -f2 | cut -d] -f1`; do
+				match=false
+				port=`cat /proc/net/raw | grep $sockid | cut -d: -f3 | cut -d' ' -f1`
+				if [ $((0x$port)) -eq 1 ] 2>/dev/null; then
+					match=true
+				fi
+				port=`cat /proc/net/raw6 | grep $sockid | cut -d: -f3 | cut -d' ' -f1`
+				if [ $((0x$port)) -eq 58 ] 2>/dev/null; then
+					match=true
+				fi
+				proc=`ls -l /proc/$x/exe | awk '{print $NF}'`
+				echo $whitelist | grep $proc >/dev/null 2>&1
+				if [ $? -ne 0 ] && $match; then
+					 echo "$proc(pid: $x) is listening icmp"
+				elif $match; then
+					 echo "$proc(pid: $x) is listening icmp, ignore as it's in whitelist"
+				fi
+			done
 		fi
 	done
 }
