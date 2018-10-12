@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# suid shell：扫描系统带suid属性的文件，用strings查看文件内容，如果有bash_copyright字样（可以有更多判定条件），判定是shell，发出提醒
+# port knocking：扫描系统进程的maps文件，对用到libpcap的进程发出提醒，可以加白名单过滤
+# icmp后门：通过netstat -lwp | grep icmp扫描监听icmp的进程，发出提醒，可以加白名单过滤
+# pam后门：通过rpm自带的验证命令，验证pam包的完整性，对异常文件发出提醒
+
 function find_suid_bash_backdoor {
 	echo
 	echo "find_suid_bash_backdoor"
