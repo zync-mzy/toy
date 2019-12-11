@@ -13,7 +13,7 @@ func ReservoirSampling(k, n int) []int {
 		r[i] = i
 	}
 	for i := k; i < n; i++ {
-		j := rand.Intn(i)
+		j := rand.Intn(i+1)
 		if j < k {
 			r[j] = i
 		}
