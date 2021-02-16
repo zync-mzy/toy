@@ -3,7 +3,8 @@
 int doWrite(const int fd) {
   static char buf[] = "Hello, world!";
   int n = write(fd, buf, strlen(buf));
-  printf("file: %s, line: %d\n\tret: %d, errno: %d, error: %s\n", __FILE__, __LINE__, n, errno, strerror(errno));
+  printf("file: %s, line: %d\n\tret: %d, errno: %d, error: %s\n", __FILE__,
+         __LINE__, n, errno, strerror(errno));
   positiveOrExit(n);
   printf("write %d bytes\n", n);
   return n;
@@ -13,7 +14,8 @@ int doRead(const int fd) {
   char buf[128];
   memset(buf, 0, sizeof(buf));
   int n = read(fd, buf, sizeof(buf));
-  printf("file: %s, line: %d\n\tret: %d, errno: %d, error: %s\n", __FILE__, __LINE__, n, errno, strerror(errno));
+  printf("file: %s, line: %d\n\tret: %d, errno: %d, error: %s\n", __FILE__,
+         __LINE__, n, errno, strerror(errno));
   // positiveOrExit(n);
   return n;
 }
@@ -36,15 +38,12 @@ int main() {
   // setNonBlock(fd);
   setTimeout(fd, 6, 2);
 
-  char buf[1024];
-  memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Hello, world!");
-
   char cmd[256];
-  snprintf(cmd, sizeof(cmd), "netstat -tn | grep ':%hu ' | sed 's/  */|/g'", ntohs(addr.sin_port));
+  snprintf(cmd, sizeof(cmd), "netstat -tn | grep ':%hu ' | sed 's/  */|/g'",
+           ntohs(addr.sin_port));
   system(cmd);
 
-  int n = 1, total = 0;
+  int n = 1;
   n = doWrite(fd);
   system(cmd);
 
