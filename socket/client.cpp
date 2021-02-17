@@ -35,7 +35,7 @@ int main() {
   addr.sin_addr.s_addr = inet_addr("127.0.0.1");
   zeroOrExit(connect(fd, (struct sockaddr*)&addr, sizeof(addr)));
   printf("connected\n");
-  // setNonBlock(fd);
+  setNonBlock(fd);
   setTimeout(fd, 6, 2);
 
   char cmd[256];
@@ -45,12 +45,11 @@ int main() {
 
   int n = 1;
   n = doWrite(fd);
-  system(cmd);
 
-  sleep(2);
-  system(cmd);
-  n = doRead(fd);
-  n = doRead(fd);
+  while (true) {
+    n = doRead(fd);
+    sleep(1);
+  }
 
   close(fd);
 

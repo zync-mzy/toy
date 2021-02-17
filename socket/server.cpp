@@ -9,7 +9,8 @@ int main() {
   struct linger lo = {1, 0};
   // setsockopt(fd, SOL_SOCKET, SO_LINGER, &lo, sizeof(lo));
   int buf_size = 128;
-  zeroOrExit(setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &buf_size, sizeof(buf_size)));
+  zeroOrExit(
+      setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &buf_size, sizeof(buf_size)));
   socklen_t size = sizeof(buf_size);
   zeroOrExit(getsockopt(fd, SOL_SOCKET, SO_RCVBUF, &buf_size, &size));
   printf("SO_RCVBUF: %d\n", buf_size);
@@ -31,10 +32,6 @@ int main() {
     positiveOrExit(client);
     printf("accepted: %d\n", client);
     setTimeout(client, 6, 1);
-
-    sleep(1);
-    close(client);
-    continue;
 
     int n = read(client, buf, sizeof(buf));
     positiveOrExit(n);
